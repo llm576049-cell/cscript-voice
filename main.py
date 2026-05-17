@@ -6,6 +6,14 @@ from typing import Optional
 import typer
 import yaml
 
+from analyzer import create_analyzer
+from audio.assembler import AudioAssembler
+from parser.script_parser import ScriptParser
+from tts import create_tts
+from voice.manager import VoiceManager
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning, module="cosyvoice")
+
 app = typer.Typer(help="Chinese screenplay reader with emotion-aware voice synthesis.")
 
 
@@ -27,7 +35,7 @@ def main(
         None,
         "--backend",
         "-b",
-        help="Emotion backend override: ollama | transformers | rule_based | claude",
+        help="Emotion backend: ollama | transformers | rule_based | claude",
     ),
     model_path: Optional[str] = typer.Option(
         None,
@@ -45,9 +53,6 @@ def main(
     if model_path:
         cfg["tts"]["model_path"] = model_path
 
-    # --- parse ---
-    from parser.script_parser import ScriptParser
-
     lines = ScriptParser().parse(script)
     spoken = [ln for ln in lines if not ln.is_scene and ln.character]
 
@@ -57,20 +62,13 @@ def main(
 
     typer.echo(f"Parsed {len(spoken)} dialogue lines from {script.name}")
 
-    # --- analyze emotions ---
-    from analyzer import create_analyzer
-
     analyzer = create_analyzer(cfg["emotion_analyzer"])
     emotions = analyzer.analyze_batch(spoken)
 
-    # --- voice manager ---
-    from voice.manager import VoiceManager
-
     voice_mgr = VoiceManager(cfg)
 
-    # --- dry-run: just print analysis ---
     if dry_run:
-        typer.echo("\n── Emotion Analysis ──────────────────────────────────────")
+        typer.echo("\n── Emotion Analysis ─────────────────────────────────")
         for line, emo in zip(spoken, emotions):
             instruct = voice_mgr.build_instruct(line.character, emo)
             profile = voice_mgr.get_profile(line.character)
@@ -81,11 +79,7 @@ def main(
             typer.echo(f"    {line.text}")
         return
 
-    # --- TTS + assemble ---
-    from tts.cosyvoice_tts import CosyVoiceTTS
-    from audio.assembler import AudioAssembler
-
-    tts = CosyVoiceTTS(cfg["tts"]["model_path"])
+    tts = create_tts(cfg["tts"])
     assembler = AudioAssembler()
 
     prev_scene: str | None = None

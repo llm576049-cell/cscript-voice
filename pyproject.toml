@@ -46,8 +46,10 @@ tts = [
     "wget>=3.2",
     "x-transformers>=2.0",
     "wetext>=0.0",
-    # transformers<5: v5 changes Qwen2 default dtype to BFloat16, breaking CosyVoice
-    "transformers>=4.40,<5",
+    "modelscope>=1.9",
+    # 4.51.3: last known-good version with CosyVoice2; newer versions cause Qwen2
+    # to generate excessively long speech tokens, producing ~3x longer audio
+    "transformers==4.51.3",
 ]
 # Emotion analysis via local transformers model (~1.1 GB download on first run)
 transformers = [
@@ -58,11 +60,9 @@ transformers = [
 claude = [
     "anthropic>=0.40",
 ]
-# One-time helper for downloading the CosyVoice2-0.5B model weights
-setup = [
-    "modelscope>=1.9",
-]
 
 [tool.uv]
 package = false
-dev-dependencies = ["ruff>=0.15"]
+
+[dependency-groups]
+dev = ["ruff>=0.15"]

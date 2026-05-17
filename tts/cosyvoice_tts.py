@@ -1,30 +1,29 @@
 import io
 
+import soundfile as sf
+import torch
 
-class CosyVoiceTTS:
+from cosyvoice.cli.cosyvoice import CosyVoice2
+
+from tts.base import TTSBackend
+
+
+class CosyVoiceTTS(TTSBackend):
     def __init__(self, model_path: str):
         self.model_path = model_path
-        self._model = None
+        self._model: CosyVoice2 | None = None
         self.sample_rate: int = 24000  # CosyVoice2 default
 
-    def _get_model(self):
+    def _get_model(self) -> CosyVoice2:
         if self._model is None:
-            try:
-                from cosyvoice.cli.cosyvoice import CosyVoice2
-            except ImportError as e:
-                raise RuntimeError(
-                    f"CosyVoice2 import failed: {e}\n"
-                    "Run: uv pip install onnxruntime openai-whisper"
-                ) from e
             print(f"Loading CosyVoice2 from {self.model_path} …")
-            self._model = CosyVoice2(self.model_path, load_jit=True, load_trt=False)
+            self._model = CosyVoice2(
+                self.model_path, load_jit=True, load_trt=False
+            )
             self.sample_rate = self._model.sample_rate
         return self._model
 
     def synthesize(self, text: str, ref_wav: str, instruct_text: str) -> bytes:
-        import soundfile as sf
-        import torch
-
         model = self._get_model()
         # CosyVoice2 instruct mode requires <|endofprompt|> suffix
         tagged_instruct = instruct_text + "<|endofprompt|>"

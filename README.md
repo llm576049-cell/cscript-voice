@@ -22,21 +22,20 @@ uv sync
 
 ### 2. Install CosyVoice 2
 
-CosyVoice is not on PyPI — clone it next to the project, then add it and its
-Matcha-TTS submodule to the Python path via `.pth` files (the `pip install -e`
-approach breaks on Python 3.13 due to old NumPy build deps):
+CosyVoice is not on PyPI — clone it inside the project directory, then add it
+and its Matcha-TTS submodule to the Python path via `.pth` files:
 
 ```bash
 git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git
 
 # add CosyVoice and Matcha-TTS to the venv path
 SITE=$(uv run python -c "import site; print(site.getsitepackages()[0])")
-echo "$(pwd)/../CosyVoice"                        > "$SITE/cosyvoice.pth"
-echo "$(pwd)/../CosyVoice/third_party/Matcha-TTS" > "$SITE/matcha.pth"
-
-# install remaining runtime deps not pulled by uv sync
-uv pip install onnxruntime openai-whisper inflect
+echo "$(pwd)/CosyVoice"                        > "$SITE/cosyvoice.pth"
+echo "$(pwd)/CosyVoice/third_party/Matcha-TTS" > "$SITE/matcha.pth"
 ```
+
+> **Note:** these `.pth` files live inside the venv and must be re-added any
+> time you recreate it (e.g. after `uv sync --python X.Y`).
 
 ### 3. Download the TTS model (~2 GB)
 
