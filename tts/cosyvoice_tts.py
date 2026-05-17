@@ -21,21 +21,23 @@ class CosyVoiceTTS:
             self.sample_rate = self._model.sample_rate
         return self._model
 
-    def synthesize(self, text: str, spk_id: str, instruct_text: str) -> bytes:
+    def synthesize(self, text: str, ref_wav: str, instruct_text: str) -> bytes:
+        import soundfile as sf
         import torch
-        import torchaudio
 
         model = self._get_model()
+        # CosyVoice2 instruct mode requires <|endofprompt|> suffix
+        tagged_instruct = instruct_text + "<|endofprompt|>"
         chunks = [
             result["tts_speech"]
             for result in model.inference_instruct2(
                 tts_text=text,
-                spk_id=spk_id,
-                instruct_text=instruct_text,
+                instruct_text=tagged_instruct,
+                prompt_wav=ref_wav,
                 stream=False,
             )
         ]
         audio = torch.cat(chunks, dim=-1) if len(chunks) > 1 else chunks[0]
         buf = io.BytesIO()
-        torchaudio.save(buf, audio, self.sample_rate, format="wav")
+        sf.write(buf, audio.squeeze(0).numpy(), self.sample_rate, format="WAV")
         return buf.getvalue()

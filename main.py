@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 from typing import Optional
 
@@ -31,7 +30,9 @@ def main(
         help="Emotion backend override: ollama | transformers | rule_based | claude",
     ),
     model_path: Optional[str] = typer.Option(
-        None, "--model-path", help="CosyVoice2 model directory (overrides config)"
+        None,
+        "--model-path",
+        help="CosyVoice2 model directory (overrides config)",
     ),
     dry_run: bool = typer.Option(
         False, "--dry-run", help="Print emotion analysis, skip TTS"
@@ -48,7 +49,7 @@ def main(
     from parser.script_parser import ScriptParser
 
     lines = ScriptParser().parse(script)
-    spoken = [l for l in lines if not l.is_scene and l.character]
+    spoken = [ln for ln in lines if not ln.is_scene and ln.character]
 
     if not spoken:
         typer.echo("No dialogue lines found.", err=True)
@@ -69,12 +70,12 @@ def main(
 
     # --- dry-run: just print analysis ---
     if dry_run:
-        typer.echo("\n── Emotion Analysis ─────────────────────────────────────")
+        typer.echo("\n── Emotion Analysis ──────────────────────────────────────")
         for line, emo in zip(spoken, emotions):
             instruct = voice_mgr.build_instruct(line.character, emo)
             profile = voice_mgr.get_profile(line.character)
             typer.echo(
-                f"[{line.character}] spk={profile['spk_id']}  "
+                f"[{line.character}] ref={profile['ref_wav']}  "
                 f"{emo.emotion}/{emo.intensity}  →  {instruct}"
             )
             typer.echo(f"    {line.text}")
@@ -93,14 +94,15 @@ def main(
         profile = voice_mgr.get_profile(line.character)
         instruct = voice_mgr.build_instruct(line.character, emo)
 
+        tail = line.text[:40] + ("…" if len(line.text) > 40 else "")
         typer.echo(
-            f"[{i + 1}/{len(spoken)}] {line.character} ({emo.emotion}/{emo.intensity}): "
-            f"{line.text[:40]}{'…' if len(line.text) > 40 else ''}"
+            f"[{i + 1}/{len(spoken)}] {line.character}"
+            f" ({emo.emotion}/{emo.intensity}): {tail}"
         )
 
         wav = tts.synthesize(
             text=line.text,
-            spk_id=profile["spk_id"],
+            ref_wav=profile["ref_wav"],
             instruct_text=instruct,
         )
 

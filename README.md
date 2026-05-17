@@ -41,6 +41,7 @@ uv pip install onnxruntime openai-whisper inflect
 ### 3. Download the TTS model (~2 GB)
 
 ```bash
+uv pip install modelscope
 uv run python - <<'EOF'
 from modelscope import snapshot_download
 snapshot_download('iic/CosyVoice2-0.5B', local_dir='pretrained_models/CosyVoice2-0.5B')
