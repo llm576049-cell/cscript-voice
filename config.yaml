@@ -1,0 +1,36 @@
+emotion_analyzer:
+  # backend options: ollama | transformers | rule_based | claude
+  backend: ollama
+
+  ollama:
+    model: qwen2.5:3b
+    host: http://localhost:11434
+
+  transformers:
+    # downloads ~1.1GB on first run
+    model: joeddav/xlm-roberta-large-xnli
+
+  claude:
+    model: claude-haiku-4-5-20251001
+    # set ANTHROPIC_API_KEY environment variable
+
+tts:
+  # path to CosyVoice2-0.5B model directory
+  model_path: pretrained_models/CosyVoice2-0.5B
+
+voice:
+  default_gender: female   # male | female
+
+characters:
+  # Map character names to voice profiles.
+  # gender: male | female
+  # age:    young | middle | old
+  阿强:
+    gender: male
+    age: young
+  小梅:
+    gender: female
+    age: young
+  老李:
+    gender: male
+    age: old

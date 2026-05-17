@@ -1,0 +1,28 @@
+presets:
+  young_male:
+    spk_id: 中文男
+    age_instruct: 像年轻男性说话
+
+  middle_male:
+    spk_id: 中文男
+    age_instruct: 像中年男性说话，声音沉稳
+
+  old_male:
+    spk_id: 中文男
+    age_instruct: 像年迈的男性说话，声音低沉沙哑
+
+  young_female:
+    spk_id: 中文女
+    age_instruct: 像年轻女性说话
+
+  middle_female:
+    spk_id: 中文女
+    age_instruct: 像中年女性说话
+
+  old_female:
+    spk_id: 中文女
+    age_instruct: 像年迈的女性说话，声音略显苍老
+
+  cantonese_female:
+    spk_id: 粤语女
+    age_instruct: 像年轻女性说话
