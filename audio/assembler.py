@@ -20,7 +20,7 @@ class AudioAssembler:
     def export(self, path: Path) -> None:
         if not self._segments:
             raise ValueError("No audio to export")
-        combined: AudioSegment = sum(self._segments)  # type: ignore[arg-type]
+        combined: AudioSegment = sum(self._segments)  # type: ignore[arg-type]  # pydub __add__ concatenates
         fmt = path.suffix.lstrip(".") or "mp3"
         combined.export(str(path), format=fmt)
         duration_s = len(combined) / 1000

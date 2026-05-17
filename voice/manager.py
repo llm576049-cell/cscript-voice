@@ -45,7 +45,9 @@ class VoiceManager:
         age = char_cfg.get("age", "young")
         key = f"{age}_{gender}"
         presets = self._profiles["presets"]
-        return presets.get(key, presets["young_female"])
+        return presets.get(
+            key, presets["young_female"]
+        )  # unknown age/gender combos fall back here
 
     def build_instruct(self, character: str, emotion: EmotionResult) -> str:
         profile = self.get_profile(character)

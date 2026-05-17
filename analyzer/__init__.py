@@ -1,4 +1,4 @@
-from .base import EmotionAnalyzer, EmotionResult
+from .base import EmotionAnalyzer
 
 
 def create_analyzer(cfg: dict) -> EmotionAnalyzer:
@@ -17,6 +17,14 @@ def create_analyzer(cfg: dict) -> EmotionAnalyzer:
 
         return ClaudeAnalyzer(cfg.get("claude", {}))
     else:
+        if backend != "rule_based":
+            import warnings
+
+            warnings.warn(
+                f"Unknown emotion backend {backend!r},"
+                " falling back to rule_based",
+                stacklevel=2,
+            )
         from .rule_based import RuleBasedAnalyzer
 
         return RuleBasedAnalyzer()

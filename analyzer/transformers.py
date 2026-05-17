@@ -16,7 +16,7 @@ _LABELS_ZH = list(_LABEL_MAP.keys())
 class TransformersAnalyzer(EmotionAnalyzer):
     def __init__(self, cfg: dict):
         self.model_name = cfg.get("model", "joeddav/xlm-roberta-large-xnli")
-        self._classifier = None
+        self._classifier = None  # lazy: avoids importing transformers + ~1.1 GB download until first use
 
     def _get_classifier(self):
         if self._classifier is None:

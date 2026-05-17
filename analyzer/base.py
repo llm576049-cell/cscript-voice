@@ -28,6 +28,8 @@ class EmotionAnalyzer(ABC):
     def analyze_batch(self, lines: list) -> list[EmotionResult]:
         results = []
         for i, line in enumerate(lines):
-            context = [l.text for l in lines[max(0, i - 3) : i]]
+            context = [
+                l.text for l in lines[max(0, i - 3) : i]
+            ]  # 3-line sliding window
             results.append(self.analyze(line.text, context, line.scene))
         return results

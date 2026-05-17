@@ -15,7 +15,9 @@ class ClaudeAnalyzer(EmotionAnalyzer):
     def __init__(self, cfg: dict):
         import anthropic
 
-        self.client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+        self.client = anthropic.Anthropic(
+            api_key=os.environ.get("ANTHROPIC_API_KEY")
+        )
         self.model = cfg.get("model", "claude-haiku-4-5-20251001")
 
     def analyze(
@@ -32,14 +34,18 @@ class ClaudeAnalyzer(EmotionAnalyzer):
             max_tokens=64,
             messages=[{"role": "user", "content": prompt}],
         )
-        return EmotionResult(**json.loads(msg.content[0].text))
+        try:
+            return EmotionResult(**json.loads(msg.content[0].text))
+        except Exception:
+            return EmotionResult()
 
     def analyze_batch(self, lines: list) -> list[EmotionResult]:
+        # sends all lines in one request instead of N; falls back to per-line on parse failure
         if not lines:
             return []
-        scene = next((l.scene for l in lines if l.scene), "")
+        scene = next((ln.scene for ln in lines if ln.scene), "")
         numbered = "\n".join(
-            f"{i + 1}. [{l.character}] {l.text}" for i, l in enumerate(lines)
+            f"{i + 1}. [{ln.character}] {ln.text}" for i, ln in enumerate(lines)
         )
         prompt = _BATCH_TMPL.format(scene=scene, lines=numbered)
         msg = self.client.messages.create(

@@ -17,9 +17,7 @@ class CosyVoiceTTS(TTSBackend):
     def _get_model(self) -> CosyVoice2:
         if self._model is None:
             print(f"Loading CosyVoice2 from {self.model_path} …")
-            self._model = CosyVoice2(
-                self.model_path, load_jit=True, load_trt=False
-            )
+            self._model = CosyVoice2(self.model_path, load_jit=True, load_trt=False)
             self.sample_rate = self._model.sample_rate
         return self._model
 

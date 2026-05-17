@@ -12,6 +12,7 @@ from parser.script_parser import ScriptParser
 from tts import create_tts
 from voice.manager import VoiceManager
 import warnings
+
 warnings.filterwarnings("ignore", category=FutureWarning, module="cosyvoice")
 
 app = typer.Typer(help="Chinese screenplay reader with emotion-aware voice synthesis.")
