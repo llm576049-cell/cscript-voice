@@ -10,6 +10,7 @@ from analyzer import create_analyzer
 from audio.assembler import AudioAssembler
 from parser.script_parser import ScriptParser
 from tts import create_tts
+from voice.inferrer import infer_characters
 from voice.manager import VoiceManager
 import warnings
 
@@ -62,6 +63,14 @@ def main(
         raise typer.Exit(1)
 
     typer.echo(f"Parsed {len(spoken)} dialogue lines from {script.name}")
+
+    existing_chars = cfg.get("characters") or {}
+    inferred = infer_characters(spoken, existing_chars, cfg["emotion_analyzer"])
+    if inferred:
+        typer.echo("Inferred character profiles:")
+        for name, profile in inferred.items():
+            typer.echo(f"  {name}: {profile['gender']}, {profile['age']}")
+        cfg.setdefault("characters", {}).update(inferred)
 
     analyzer = create_analyzer(cfg["emotion_analyzer"])
     emotions = analyzer.analyze_batch(spoken)
