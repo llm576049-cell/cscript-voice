@@ -35,6 +35,7 @@ analyzer/
 voice/
   manager.py                 # maps character + emotion → lvoice instruct string
   profiles.yaml              # voice presets: young/middle/old × male/female
+  assets/                    # reference WAV clips used for zero-shot cloning
 tts/lvoice_tts.py            # HTTP client for lvoice's /v1/tts/instruct endpoint
 audio/assembler.py           # pydub concat with scene-aware pause lengths
 ```

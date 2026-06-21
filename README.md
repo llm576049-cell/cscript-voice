@@ -117,6 +117,11 @@ Available voice presets: `young_male`, `middle_male`, `old_male`, `young_female`
 
 Unrecognized characters fall back to `young_female`.
 
+Each preset references a short WAV clip under `voice/assets/` (see
+`voice/profiles.yaml`), used by lvoice for zero-shot voice cloning — drop your
+own `male_reference.wav` / `female_reference.wav` there before generating
+audio (see [voice/assets/README.md](voice/assets/README.md)).
+
 ---
 
 ## Emotion backends
