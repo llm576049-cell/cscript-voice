@@ -1,28 +1,28 @@
 presets:
   young_male:
-    ref_wav: CosyVoice/asset/cross_lingual_prompt.wav
+    ref_wav: voice/assets/male_reference.wav
     age_instruct: 像年轻男性说话
 
   middle_male:
-    ref_wav: CosyVoice/asset/cross_lingual_prompt.wav
+    ref_wav: voice/assets/male_reference.wav
     age_instruct: 像中年男性说话，声音沉稳
 
   old_male:
-    ref_wav: CosyVoice/asset/cross_lingual_prompt.wav
+    ref_wav: voice/assets/male_reference.wav
     age_instruct: 像年迈的男性说话，声音低沉沙哑
 
   young_female:
-    ref_wav: CosyVoice/asset/zero_shot_prompt.wav
+    ref_wav: voice/assets/female_reference.wav
     age_instruct: 像年轻女性说话
 
   middle_female:
-    ref_wav: CosyVoice/asset/zero_shot_prompt.wav
+    ref_wav: voice/assets/female_reference.wav
     age_instruct: 像中年女性说话
 
   old_female:
-    ref_wav: CosyVoice/asset/zero_shot_prompt.wav
+    ref_wav: voice/assets/female_reference.wav
     age_instruct: 像年迈的女性说话，声音略显苍老
 
   cantonese_female:
-    ref_wav: CosyVoice/asset/zero_shot_prompt.wav
+    ref_wav: voice/assets/female_reference.wav
     age_instruct: 像年轻女性说话

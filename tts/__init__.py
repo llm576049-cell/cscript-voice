@@ -2,11 +2,14 @@ from tts.base import TTSBackend
 
 
 def create_tts(cfg: dict) -> TTSBackend:
-    backend = cfg.get("backend", "cosyvoice")
+    backend = cfg.get("backend", "lvoice")
 
-    if backend == "cosyvoice":
-        from tts.cosyvoice_tts import CosyVoiceTTS
+    if backend == "lvoice":
+        from tts.lvoice_tts import LvoiceTTS
 
-        return CosyVoiceTTS(cfg["model_path"])
+        return LvoiceTTS(
+            cfg.get("base_url", "http://localhost:8000"),
+            timeout=cfg.get("timeout", 60.0),
+        )
 
     raise ValueError(f"Unknown TTS backend: {backend!r}")

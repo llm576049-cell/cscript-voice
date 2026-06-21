@@ -15,8 +15,8 @@ emotion_analyzer:
     # set ANTHROPIC_API_KEY environment variable
 
 tts:
-  backend: cosyvoice
-  model_path: pretrained_models/CosyVoice2-0.5B
+  backend: lvoice
+  base_url: http://localhost:8000
 
 voice:
   default_gender: female   # male | female

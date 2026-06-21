@@ -1,13 +1,13 @@
 # cspeak
 
-Chinese screenplay-to-speech synthesizer. Feed it a screenplay, get an MP3 with distinct voices per character and emotion-aware delivery — runs fully local.
+Chinese screenplay-to-speech synthesizer. Feed it a screenplay, get an MP3 with distinct voices per character and emotion-aware delivery.
 
 ## Requirements
 
 - Python 3.13+
 - [uv](https://docs.astral.sh/uv/getting-started/installation/)
 - [Ollama](https://ollama.com) (for the default emotion backend)
-- A machine with ~4 GB free RAM (no GPU required)
+- A running [lvoice](https://github.com/llm576049-cell/lvoice) instance for speech synthesis
 
 ---
 
@@ -20,39 +20,18 @@ cd cspeak
 uv sync
 ```
 
-### 2. Install CosyVoice 2
-
-CosyVoice is not on PyPI — clone it inside the project directory, then add it
-and its Matcha-TTS submodule to the Python path via `.pth` files:
-
-```bash
-git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git
-
-# add CosyVoice and Matcha-TTS to the venv path
-SITE=$(uv run python -c "import site; print(site.getsitepackages()[0])")
-echo "$(pwd)/CosyVoice"                        > "$SITE/cosyvoice.pth"
-echo "$(pwd)/CosyVoice/third_party/Matcha-TTS" > "$SITE/matcha.pth"
-```
-
-> **Note:** these `.pth` files live inside the venv and must be re-added any
-> time you recreate it (e.g. after `uv sync --python X.Y`).
-
-### 3. Download the TTS model (~2 GB)
-
-```bash
-uv pip install modelscope
-uv run python - <<'EOF'
-from modelscope import snapshot_download
-snapshot_download('iic/CosyVoice2-0.5B', local_dir='pretrained_models/CosyVoice2-0.5B')
-EOF
-```
-
-### 4. Install Ollama + emotion model
+### 2. Install Ollama + emotion model
 
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
 ollama pull qwen2.5:3b
 ```
+
+### 3. Start lvoice
+
+`config.yaml`'s `tts:` section points at an [lvoice](https://github.com/llm576049-cell/lvoice)
+service for synthesis. Run it separately (`docker compose up --build` in that
+repo) and point `tts.base_url` at it (default: `http://localhost:8000`).
 
 ---
 
@@ -84,7 +63,7 @@ Options:
   -o, --output PATH   Output audio file [default: output.mp3]
   -c, --config PATH   Config file [default: config.yaml]
   -b, --backend TEXT  Emotion backend: ollama | transformers | rule_based | claude
-      --model-path    CosyVoice2 model directory (overrides config.yaml)
+      --base-url      lvoice service URL (overrides config.yaml)
       --dry-run       Print emotion analysis only, skip TTS
 ```
 

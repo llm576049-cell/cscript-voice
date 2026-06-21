@@ -12,9 +12,6 @@ from parser.script_parser import ScriptParser
 from tts import create_tts
 from voice.inferrer import infer_characters
 from voice.manager import VoiceManager
-import warnings
-
-warnings.filterwarnings("ignore", category=FutureWarning, module="cosyvoice")
 
 app = typer.Typer(help="Chinese screenplay reader with emotion-aware voice synthesis.")
 
@@ -39,10 +36,10 @@ def main(
         "-b",
         help="Emotion backend: ollama | transformers | rule_based | claude",
     ),
-    model_path: Optional[str] = typer.Option(
+    base_url: Optional[str] = typer.Option(
         None,
-        "--model-path",
-        help="CosyVoice2 model directory (overrides config)",
+        "--base-url",
+        help="lvoice service URL (overrides config)",
     ),
     dry_run: bool = typer.Option(
         False, "--dry-run", help="Print emotion analysis, skip TTS"
@@ -52,8 +49,8 @@ def main(
 
     if backend:
         cfg["emotion_analyzer"]["backend"] = backend
-    if model_path:
-        cfg["tts"]["model_path"] = model_path
+    if base_url:
+        cfg["tts"]["base_url"] = base_url
 
     lines = ScriptParser().parse(script)
     spoken = [ln for ln in lines if not ln.is_scene and ln.character]
