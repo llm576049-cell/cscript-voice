@@ -4,7 +4,7 @@ from tts.base import TTSBackend
 
 
 class LvoiceTTS(TTSBackend):
-    def __init__(self, base_url: str, timeout: float = 60.0):
+    def __init__(self, base_url: str, timeout: float = 120.0):
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
 

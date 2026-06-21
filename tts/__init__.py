@@ -9,7 +9,7 @@ def create_tts(cfg: dict) -> TTSBackend:
 
         return LvoiceTTS(
             cfg.get("base_url", "http://localhost:8000"),
-            timeout=cfg.get("timeout", 60.0),
+            timeout=cfg.get("timeout", 120.0),
         )
 
     raise ValueError(f"Unknown TTS backend: {backend!r}")

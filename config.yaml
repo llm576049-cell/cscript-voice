@@ -17,6 +17,7 @@ emotion_analyzer:
 tts:
   backend: lvoice
   base_url: http://localhost:8000
+  timeout: 300
 
 voice:
   default_gender: female   # male | female
